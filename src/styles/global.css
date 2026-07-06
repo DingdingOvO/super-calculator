@@ -1,0 +1,440 @@
+/* ============================================
+   超级计算器 - 全局样式
+   Windows 11 云母半透明材质 (Mica/Acrylic)
+   支持亮色 / 深色主题
+   ============================================ */
+
+/* --- CSS 变量 (主题) --- */
+:root,
+[data-theme='light'] {
+  /* Mica 基础色调 */
+  --mica-bg: linear-gradient(135deg, rgba(243, 243, 243, 0.85) 0%, rgba(235, 235, 245, 0.75) 100%);
+  --mica-border: rgba(255, 255, 255, 0.5);
+  --mica-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  --mica-blur: blur(30px);
+
+  /* 表面 */
+  --surface-color: rgba(255, 255, 255, 0.6);
+  --surface-hover: rgba(255, 255, 255, 0.8);
+  --surface-active: rgba(0, 0, 0, 0.05);
+
+  /* 文本 */
+  --text-primary: #1a1a1a;
+  --text-secondary: #666666;
+  --text-dim: #999999;
+
+  /* 按钮 */
+  --btn-number-bg: rgba(255, 255, 255, 0.7);
+  --btn-number-hover: rgba(255, 255, 255, 0.9);
+  --btn-number-active: rgba(0, 0, 0, 0.06);
+  --btn-number-color: #1a1a1a;
+
+  --btn-operator-bg: rgba(230, 230, 235, 0.6);
+  --btn-operator-hover: rgba(220, 220, 230, 0.8);
+  --btn-operator-active: rgba(200, 200, 210, 0.9);
+  --btn-operator-color: #1a1a1a;
+
+  --btn-function-bg: rgba(240, 240, 245, 0.5);
+  --btn-function-hover: rgba(230, 230, 240, 0.7);
+  --btn-function-active: rgba(210, 210, 220, 0.8);
+  --btn-function-color: #333333;
+
+  --btn-equals-bg: rgba(0, 103, 192, 0.15);
+  --btn-equals-hover: rgba(0, 103, 192, 0.25);
+  --btn-equals-active: rgba(0, 103, 192, 0.35);
+  --btn-equals-color: #0067c0;
+
+  /* 显示区 */
+  --display-bg: rgba(255, 255, 255, 0.4);
+  --expression-color: #888;
+
+  /* 标签页 */
+  --tab-active-bg: rgba(255, 255, 255, 0.7);
+  --tab-hover-bg: rgba(255, 255, 255, 0.4);
+  --tab-disabled-color: #bbb;
+
+  /* ��项 */
+  --error-color: #d32f2f;
+  --placeholder-color: #999;
+}
+
+[data-theme='dark'] {
+  --mica-bg: linear-gradient(135deg, rgba(32, 32, 32, 0.9) 0%, rgba(28, 28, 36, 0.85) 100%);
+  --mica-border: rgba(255, 255, 255, 0.08);
+  --mica-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --mica-blur: blur(30px);
+
+  --surface-color: rgba(255, 255, 255, 0.04);
+  --surface-hover: rgba(255, 255, 255, 0.08);
+  --surface-active: rgba(255, 255, 255, 0.12);
+
+  --text-primary: #f0f0f0;
+  --text-secondary: #a0a0a0;
+  --text-dim: #666666;
+
+  --btn-number-bg: rgba(255, 255, 255, 0.06);
+  --btn-number-hover: rgba(255, 255, 255, 0.12);
+  --btn-number-active: rgba(255, 255, 255, 0.18);
+  --btn-number-color: #f0f0f0;
+
+  --btn-operator-bg: rgba(200, 200, 220, 0.08);
+  --btn-operator-hover: rgba(200, 200, 220, 0.16);
+  --btn-operator-active: rgba(200, 200, 220, 0.24);
+  --btn-operator-color: #f0f0f0;
+
+  --btn-function-bg: rgba(255, 255, 255, 0.04);
+  --btn-function-hover: rgba(255, 255, 255, 0.08);
+  --btn-function-active: rgba(255, 255, 255, 0.14);
+  --btn-function-color: #c0c0c0;
+
+  --btn-equals-bg: rgba(79, 140, 255, 0.15);
+  --btn-equals-hover: rgba(79, 140, 255, 0.28);
+  --btn-equals-active: rgba(79, 140, 255, 0.40);
+  --btn-equals-color: #4f8cff;
+
+  --display-bg: rgba(255, 255, 255, 0.03);
+  --expression-color: #888;
+
+  --tab-active-bg: rgba(255, 255, 255, 0.08);
+  --tab-hover-bg: rgba(255, 255, 255, 0.04);
+  --tab-disabled-color: #555;
+
+  --error-color: #ef5350;
+  --placeholder-color: #666;
+}
+
+/* --- 全局重置 --- */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color: var(--text-primary);
+  background: #000;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* --- 应用容器 --- */
+.calc-app {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(79, 140, 255, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(180, 130, 255, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(0, 200, 200, 0.05) 0%, transparent 50%),
+    var(--mica-bg);
+}
+
+/* --- 计算器外壳 (云母效果) --- */
+.calc-shell {
+  width: 360px;
+  padding: 20px;
+  border-radius: 16px;
+  background: var(--surface-color);
+  backdrop-filter: var(--mica-blur);
+  -webkit-backdrop-filter: var(--mica-blur);
+  border: 1px solid var(--mica-border);
+  box-shadow: var(--mica-shadow);
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* --- 标题栏 --- */
+.calc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.calc-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  user-select: none;
+}
+
+.calc-theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  background: var(--surface-color);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.calc-theme-toggle:hover {
+  background: var(--surface-hover);
+  color: var(--text-primary);
+}
+
+/* --- 模式切换标签 --- */
+.calc-mode-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 16px;
+  padding: 3px;
+  border-radius: 10px;
+  background: var(--surface-color);
+}
+
+.calc-mode-tab {
+  flex: 1;
+  padding: 6px 8px;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.calc-mode-tab:hover:not(:disabled) {
+  background: var(--tab-hover-bg);
+}
+
+.calc-mode-tab--active {
+  background: var(--tab-active-bg) !important;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.calc-mode-tab:disabled {
+  color: var(--tab-disabled-color);
+  cursor: not-allowed;
+}
+
+/* --- 显示屏 --- */
+.calc-display {
+  padding: 16px 12px;
+  margin-bottom: 12px;
+  border-radius: 12px;
+  background: var(--display-bg);
+  min-height: 88px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
+  overflow: hidden;
+}
+
+.calc-expression {
+  font-size: 0.8rem;
+  color: var(--expression-color);
+  min-height: 1.2em;
+  word-break: break-all;
+  text-align: right;
+  width: 100%;
+  margin-bottom: 4px;
+}
+
+.calc-result {
+  font-size: 2.2rem;
+  font-weight: 300;
+  color: var(--text-primary);
+  line-height: 1.1;
+  word-break: break-all;
+  text-align: right;
+  width: 100%;
+  transition: font-size 0.15s;
+  letter-spacing: -0.5px;
+}
+
+.calc-result--error {
+  color: var(--error-color);
+  font-size: 1.2rem;
+}
+
+/* --- 按钮网格 --- */
+.calc-button-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+/* --- 按钮 --- */
+.calc-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 56px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.2rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 水波纹效果 (伪元素) */
+.calc-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at var(--ripple-x, 50%) var(--ripple-y, 50%), rgba(255,255,255,0.3) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.calc-btn:active::after {
+  opacity: 1;
+}
+
+/* 数字按钮 */
+.calc-btn--number {
+  background: var(--btn-number-bg);
+  color: var(--btn-number-color);
+}
+
+.calc-btn--number:hover {
+  background: var(--btn-number-hover);
+}
+
+.calc-btn--number:active {
+  background: var(--btn-number-active);
+  transform: scale(0.96);
+}
+
+/* 运算符按钮 */
+.calc-btn--operator {
+  background: var(--btn-operator-bg);
+  color: var(--btn-operator-color);
+  font-size: 1.3rem;
+}
+
+.calc-btn--operator:hover {
+  background: var(--btn-operator-hover);
+}
+
+.calc-btn--operator:active {
+  background: var(--btn-operator-active);
+  transform: scale(0.96);
+}
+
+/* 功能按钮（退格、清空、百分比等） */
+.calc-btn--function {
+  background: var(--btn-function-bg);
+  color: var(--btn-function-color);
+  font-size: 0.95rem;
+}
+
+.calc-btn--function:hover {
+  background: var(--btn-function-hover);
+}
+
+.calc-btn--function:active {
+  background: var(--btn-function-active);
+  transform: scale(0.96);
+}
+
+/* 等号按钮 */
+.calc-btn--equals {
+  background: var(--btn-equals-bg);
+  color: var(--btn-equals-color);
+  font-size: 1.4rem;
+  font-weight: 500;
+}
+
+.calc-btn--equals:hover {
+  background: var(--btn-equals-hover);
+}
+
+.calc-btn--equals:active {
+  background: var(--btn-equals-active);
+  transform: scale(0.96);
+}
+
+/* --- 语言切换按钮 --- */
+.calc-lang-toggle {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  padding: 6px 12px;
+  border: 1px solid var(--mica-border);
+  border-radius: 8px;
+  background: var(--surface-color);
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  cursor: pointer;
+  backdrop-filter: var(--mica-blur);
+  transition: all 0.2s;
+  z-index: 100;
+}
+
+.calc-lang-toggle:hover {
+  background: var(--surface-hover);
+  color: var(--text-primary);
+}
+
+/* --- 占位符（未实现的模式） --- */
+.calc-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 340px;
+  color: var(--placeholder-color);
+  font-size: 0.9rem;
+}
+
+/* --- 响应式 --- */
+@media (max-width: 420px) {
+  .calc-shell {
+    width: 100%;
+    max-width: 100%;
+    border-radius: 0;
+    border: none;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-bottom: 24px;
+  }
+
+  .calc-btn {
+    height: 64px;
+  }
+
+  .calc-result {
+    font-size: 2.8rem;
+  }
+}
+
+/* --- 加载状态 --- */
+.calc-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}

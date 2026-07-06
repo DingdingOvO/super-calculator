@@ -1,0 +1,79 @@
+# ===========================================
+# Lint 工作流
+# 独立运行 Clippy (Rust) 和 ESLint (TS/TSX)
+# ===========================================
+name: Lint Check
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: lint-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+  NODE_VERSION: '22'
+
+jobs:
+  clippy:
+    name: Clippy (Rust)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+          targets: wasm32-unknown-unknown
+
+      - name: Cache Cargo Registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            rust-calculator/target
+          key: cargo-lint-${{ runner.os }}-${{ hashFiles('rust-calculator/Cargo.toml') }}
+          restore-keys: |
+            cargo-lint-${{ runner.os }}-
+
+      - name: Run Clippy
+        run: cd rust-calculator && cargo clippy --all-targets -- -D warnings
+
+  eslint:
+    name: ESLint (TypeScript)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Cache Node Modules
+        id: cache-node
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node-lint-${{ runner.os }}-${{ hashFiles('package.json') }}
+          restore-keys: |
+            node-lint-${{ runner.os }}-
+
+      - name: Install Dependencies
+        if: steps.cache-node.outputs.cache-hit != 'true'
+        run: npm install
+
+      - name: Run ESLint
+        run: npx eslint 'src/**/*.{ts,tsx}' --max-warnings 0 --format stylish

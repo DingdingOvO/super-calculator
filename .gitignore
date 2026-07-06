@@ -1,0 +1,8 @@
+node_modules/
+dist/
+rust-calculator/pkg/
+rust-calculator/target/
+.webpack-cache/
+*.wasm
+.DS_Store
+*.log

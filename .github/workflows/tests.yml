@@ -1,0 +1,92 @@
+# ===========================================
+# 单元测试工作流
+# 运行 Rust 和前端单元测试，生成测试报告
+# ===========================================
+name: Unit Tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+  NODE_VERSION: '22'
+
+jobs:
+  rust-tests:
+    name: Rust Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Cache Cargo Registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            rust-calculator/target
+          key: cargo-test-${{ runner.os }}-${{ hashFiles('rust-calculator/Cargo.toml') }}
+          restore-keys: |
+            cargo-test-${{ runner.os }}-
+
+      - name: Run Cargo Tests
+        run: cd rust-calculator && cargo test --release -- --format pretty 2>&1 | tee test_output.log
+
+      - name: Upload Rust Test Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rust-test-report
+          path: rust-calculator/test_output.log
+
+  frontend-tests:
+    name: Frontend Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Cache Node Modules
+        id: cache-node
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node-test-${{ runner.os }}-${{ hashFiles('package.json') }}
+          restore-keys: |
+            node-test-${{ runner.os }}-
+
+      - name: Install Dependencies
+        if: steps.cache-node.outputs.cache-hit != 'true'
+        run: npm install
+
+      - name: Run Vitest
+        run: npx vitest run --reporter=verbose 2>&1 | tee vitest_output.log
+
+      - name: Upload Frontend Test Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-test-report
+          path: vitest_output.log

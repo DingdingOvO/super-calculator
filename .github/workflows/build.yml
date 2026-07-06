@@ -1,0 +1,84 @@
+# ===========================================
+# 构建验证工作流
+# 每次 push / pull request 时运行
+# 安装 Node + Rust，构建 Rust WASM 和前端
+# ===========================================
+name: Build Verification
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+  NODE_VERSION: '22'
+
+jobs:
+  build:
+    name: Build & Verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Cache Node Modules
+        id: cache-node
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node-${{ runner.os }}-${{ hashFiles('package.json') }}
+          restore-keys: |
+            node-${{ runner.os }}-
+
+      - name: Install Node Dependencies
+        if: steps.cache-node.outputs.cache-hit != 'true'
+        run: npm install
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Install wasm-pack
+        run: |
+          curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+
+      - name: Cache Cargo Registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            rust-calculator/target
+          key: cargo-${{ runner.os }}-${{ hashFiles('rust-calculator/Cargo.toml') }}
+          restore-keys: |
+            cargo-${{ runner.os }}-
+
+      - name: Run Rust Tests
+        run: cd rust-calculator && cargo test --release
+
+      - name: Build WASM Package
+        run: cd rust-calculator && wasm-pack build --target bundler --release
+
+      - name: Build Frontend
+        run: npm run build
+
+      - name: TypeScript Type Check
+        run: npx tsc --noEmit
+
+      - name: ESLint Check
+        run: npx eslint 'src/**/*.{ts,tsx}' --max-warnings 0
+        continue-on-error: true

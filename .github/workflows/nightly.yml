@@ -1,0 +1,95 @@
+# ===========================================
+# 每日定时构建工作流
+# 每天 UTC 时间 00:00 (北京时间 08:00) 运行
+# 确保代码在依赖更新后依然稳定
+# ===========================================
+name: Nightly Build
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch: # 允许手动触发
+
+env:
+  CARGO_TERM_COLOR: always
+  NODE_VERSION: '22'
+
+jobs:
+  nightly:
+    name: Nightly Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Cache Node Modules
+        id: cache-node
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: night-${{ runner.os }}-${{ hashFiles('package.json') }}
+          restore-keys: |
+            night-${{ runner.os }}-
+
+      - name: Install Node Dependencies
+        if: steps.cache-node.outputs.cache-hit != 'true'
+        run: npm install
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+          targets: wasm32-unknown-unknown
+
+      - name: Install wasm-pack
+        run: |
+          curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+
+      - name: Cache Cargo Registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            rust-calculator/target
+          key: night-${{ runner.os }}-${{ hashFiles('rust-calculator/Cargo.toml') }}
+          restore-keys: |
+            night-${{ runner.os }}-
+
+      - name: Run Rust Tests
+        run: cd rust-calculator && cargo test --release
+
+      - name: Run Clippy
+        run: cd rust-calculator && cargo clippy --all-targets -- -D warnings
+
+      - name: Build WASM
+        run: cd rust-calculator && wasm-pack build --target bundler --release
+
+      - name: TypeScript Type Check
+        run: npx tsc --noEmit
+
+      - name: ESLint Check
+        run: npx eslint 'src/**/*.{ts,tsx}' --max-warnings 0
+
+      - name: Build Frontend
+        run: npm run build
+
+      - name: Run Frontend Tests
+        run: npx vitest run
+
+      - name: Upload Nightly Build
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nightly-build-report
+          path: |
+            rust-calculator/test_output.log
+            vitest_output.log
+          retention-days: 7

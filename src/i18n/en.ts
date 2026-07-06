@@ -1,0 +1,57 @@
+import type { I18nPack } from './types';
+
+const en: I18nPack = {
+  app: { title: 'Calculator' },
+  modes: {
+    standard: 'Standard',
+    scientific: 'Scientific',
+    programmer: 'Programmer',
+    dateCalculation: 'Date Calculation',
+  },
+  buttons: {
+    mc: 'MC',
+    mr: 'MR',
+    mPlus: 'M+',
+    mMinus: 'M-',
+    ms: 'MS',
+    percent: '%',
+    clear: 'C',
+    clearEntry: 'CE',
+    backspace: '⌫',
+    reciprocal: '1/x',
+    square: 'x²',
+    sqrt: '√',
+    divide: '÷',
+    multiply: '×',
+    subtract: '−',
+    add: '+',
+    equals: '=',
+    negate: '±',
+    decimal: '.',
+    zero: '0',
+    one: '1',
+    two: '2',
+    three: '3',
+    four: '4',
+    five: '5',
+    six: '6',
+    seven: '7',
+    eight: '8',
+    nine: '9',
+  },
+  errors: {
+    divideByZero: 'Cannot divide by zero',
+    overflow: 'Result out of range',
+    invalidInput: 'Invalid input',
+  },
+  theme: {
+    light: 'Light',
+    dark: 'Dark',
+  },
+  history: {
+    title: 'History',
+    empty: 'No history yet',
+  },
+};
+
+export default en;
