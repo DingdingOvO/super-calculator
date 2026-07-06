@@ -52,6 +52,19 @@ const zhCN: I18nPack = {
     title: '计算历史',
     empty: '暂无历史记录',
   },
+  scientific: {
+    sin: '正弦',
+    cos: '余弦',
+    tan: '正切',
+    log: '常用对数',
+    ln: '自然对数',
+    sqrt: '平方根',
+    power: '幂运算',
+    factorial: '阶乘',
+    angleDeg: '度',
+    angleRad: '弧度',
+    expressionPlaceholder: '输入表达式...',
+  },
 };
 
 export default zhCN;

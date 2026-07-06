@@ -52,6 +52,19 @@ const en: I18nPack = {
     title: 'History',
     empty: 'No history yet',
   },
+  scientific: {
+    sin: 'Sine',
+    cos: 'Cosine',
+    tan: 'Tangent',
+    log: 'Logarithm',
+    ln: 'Natural Log',
+    sqrt: 'Square Root',
+    power: 'Power',
+    factorial: 'Factorial',
+    angleDeg: 'Deg',
+    angleRad: 'Rad',
+    expressionPlaceholder: 'Enter expression...',
+  },
 };
 
 export default en;

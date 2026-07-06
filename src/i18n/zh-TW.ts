@@ -54,6 +54,19 @@ const zhTW: I18nPack = {
     title: '計算記錄',
     empty: '暫無記錄',
   },
+  scientific: {
+    sin: '正弦',
+    cos: '餘弦',
+    tan: '正切',
+    log: '常用對數',
+    ln: '自然對數',
+    sqrt: '平方根',
+    power: '冪運算',
+    factorial: '階乘',
+    angleDeg: '度',
+    angleRad: '弧度',
+    expressionPlaceholder: '輸入表達式...',
+  },
 };
 
 export default zhTW;

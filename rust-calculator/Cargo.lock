@@ -429,6 +429,7 @@ name = "rust-calculator"
 version = "0.1.0"
 dependencies = [
  "js-sys",
+ "libm",
  "rust_decimal",
  "serde",
  "serde-wasm-bindgen",

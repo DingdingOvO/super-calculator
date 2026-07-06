@@ -56,8 +56,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: [
-          isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
+        use: [MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader',
             options: {
@@ -80,10 +79,10 @@ module.exports = {
       template: './public/index.html',
       inject: true,
     }),
-    ...(isDev ? [] : [new MiniCssExtractPlugin({
+    new MiniCssExtractPlugin({
       filename: 'css/[name].[contenthash:8].css',
       chunkFilename: 'css/[name].[contenthash:8].chunk.css',
-    })]),
+    }),
   ],
   experiments: {
     asyncWebAssembly: true,

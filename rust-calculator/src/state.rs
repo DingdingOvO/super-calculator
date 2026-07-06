@@ -228,9 +228,7 @@ impl CalculatorState {
         if let Some(_dot_pos) = s.find('.') {
             let trimmed = s.trim_end_matches('0');
             let trimmed = trimmed.trim_end_matches('.');
-            if trimmed.is_empty() {
-                "0".to_string()
-            } else if trimmed == "-" {
+            if trimmed.is_empty() || trimmed == "-" {
                 "0".to_string()
             } else {
                 trimmed.to_string()

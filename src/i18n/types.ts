@@ -54,6 +54,19 @@ export interface I18nPack {
     title: string;
     empty: string;
   };
+  scientific: {
+    sin: string;
+    cos: string;
+    tan: string;
+    log: string;
+    ln: string;
+    sqrt: string;
+    power: string;
+    factorial: string;
+    angleDeg: string;
+    angleRad: string;
+    expressionPlaceholder: string;
+  };
 }
 
 export type I18nKey = keyof I18nPack;

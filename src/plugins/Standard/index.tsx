@@ -3,6 +3,16 @@
 import { CalcButton, ButtonGrid } from '@components/Button';
 import type { CalculatorPlugin, CalculatorPluginRender } from '@plugins/types';
 import type { I18nPack } from '@i18n/types';
+import { DivideIcon } from '@components/icons/Divide';
+import { MultiplyIcon } from '@components/icons/Multiply';
+import { MinusIcon } from '@components/icons/Minus';
+import { PlusIcon } from '@components/icons/Plus';
+import { EqualsIcon } from '@components/icons/Equals';
+import { PercentIcon } from '@components/icons/Percent';
+import { NegateIcon } from '@components/icons/Negate';
+import { BackspaceIcon } from '@components/icons/Backspace';
+
+const iconSize = { width: 20, height: 20 };
 
 const StandardButtons = ({ i18n, onDigit, onOperator, onEquals, onClear, onBackspace, onNegate, onPercent }: {
   i18n: I18nPack;
@@ -17,16 +27,16 @@ const StandardButtons = ({ i18n, onDigit, onOperator, onEquals, onClear, onBacks
   <ButtonGrid>
     {/* 第一行 */}
     <CalcButton variant="function" onClick={onPercent} aria-label="percent">
-      {i18n.buttons.percent}
+      <PercentIcon {...iconSize} />
     </CalcButton>
     <CalcButton variant="function" onClick={onClear} aria-label="clear">
       {i18n.buttons.clear}
     </CalcButton>
     <CalcButton variant="function" onClick={onBackspace} aria-label="backspace">
-      {i18n.buttons.backspace === '⌫' ? '⌫' : '⌫'}
+      <BackspaceIcon {...iconSize} />
     </CalcButton>
     <CalcButton variant="operator" onClick={() => onOperator('divide')} aria-label="divide">
-      {i18n.buttons.divide}
+      <DivideIcon {...iconSize} />
     </CalcButton>
 
     {/* 第二行 */}
@@ -34,7 +44,7 @@ const StandardButtons = ({ i18n, onDigit, onOperator, onEquals, onClear, onBacks
     <CalcButton variant="number" onClick={() => onDigit('8')}>8</CalcButton>
     <CalcButton variant="number" onClick={() => onDigit('9')}>9</CalcButton>
     <CalcButton variant="operator" onClick={() => onOperator('multiply')} aria-label="multiply">
-      {i18n.buttons.multiply}
+      <MultiplyIcon {...iconSize} />
     </CalcButton>
 
     {/* 第三行 */}
@@ -42,7 +52,7 @@ const StandardButtons = ({ i18n, onDigit, onOperator, onEquals, onClear, onBacks
     <CalcButton variant="number" onClick={() => onDigit('5')}>5</CalcButton>
     <CalcButton variant="number" onClick={() => onDigit('6')}>6</CalcButton>
     <CalcButton variant="operator" onClick={() => onOperator('subtract')} aria-label="subtract">
-      {i18n.buttons.subtract}
+      <MinusIcon {...iconSize} />
     </CalcButton>
 
     {/* 第四行 */}
@@ -50,19 +60,19 @@ const StandardButtons = ({ i18n, onDigit, onOperator, onEquals, onClear, onBacks
     <CalcButton variant="number" onClick={() => onDigit('2')}>2</CalcButton>
     <CalcButton variant="number" onClick={() => onDigit('3')}>3</CalcButton>
     <CalcButton variant="operator" onClick={() => onOperator('add')} aria-label="add">
-      {i18n.buttons.add}
+      <PlusIcon {...iconSize} />
     </CalcButton>
 
     {/* 第五行 */}
     <CalcButton variant="function" onClick={onNegate} aria-label="negate">
-      {i18n.buttons.negate}
+      <NegateIcon {...iconSize} />
     </CalcButton>
     <CalcButton variant="number" onClick={() => onDigit('0')}>0</CalcButton>
     <CalcButton variant="number" onClick={() => onDigit('.')} aria-label="decimal">
       {i18n.buttons.decimal}
     </CalcButton>
     <CalcButton variant="equals" onClick={onEquals} aria-label="equals">
-      {i18n.buttons.equals}
+      <EqualsIcon {...iconSize} />
     </CalcButton>
   </ButtonGrid>
 );
