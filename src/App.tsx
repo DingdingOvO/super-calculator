@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, Component, type ReactNode } from 'react';
 import { useWasmCalculator } from '@hooks/useCalculator';
 import { useTheme } from '@hooks/useTheme';
 import { CalculatorShell } from '@components/CalculatorShell';
@@ -13,7 +13,86 @@ import { createScientificPlaceholder } from '@plugins/Scientific/index';
 import { createProgrammerPlaceholder } from '@plugins/Programmer/index';
 import { createDateCalculationPlaceholder } from '@plugins/DateCalculation/index';
 
-export function App() {
+// ============================================
+// 错误边界 - 捕获渲染异常
+// ============================================
+class ErrorBoundary extends Component<
+  { children: ReactNode; fallback?: ReactNode },
+  { hasError: boolean; error: Error | null }
+> {
+  constructor(props: { children: ReactNode; fallback?: ReactNode }) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error: Error, info: any) {
+    console.error('[ErrorBoundary]', error, info);
+  }
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback ?? (
+        <div style={{
+          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+          minHeight: '100vh', background: '#1a1a2e', color: '#ef5350', fontFamily: 'sans-serif', padding: 20
+        }}>
+          <h2>渲染异常</h2>
+          <p style={{ marginTop: 8, color: '#aaa', fontSize: '0.85rem' }}>{this.state.error?.message}</p>
+          <button
+            onClick={() => window.location.reload()}
+            style={{
+              marginTop: 20, padding: '10px 24px', border: '1px solid rgba(239,83,80,0.3)',
+              borderRadius: 8, background: 'transparent', color: '#ef5350', cursor: 'pointer'
+            }}
+          >刷新页面</button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+// ============================================
+// 加载状态
+// ============================================
+function LoadingState({ message }: { message: string }) {
+  return (
+    <div className="calc-loading">
+      <div className="calc-loading__inner">
+        <div className="calc-loading__spinner" />
+        <p>{message}</p>
+      </div>
+    </div>
+  );
+}
+
+// ============================================
+// 错误状态
+// ============================================
+function ErrorState({ message }: { message: string }) {
+  return (
+    <div className="calc-loading calc-loading--error">
+      <div className="calc-loading__inner">
+        <div className="calc-loading__icon">⚠</div>
+        <h3>加载失败</h3>
+        <p>{message}</p>
+        <button
+          className="calc-retry-btn"
+          onClick={() => window.location.reload()}
+          type="button"
+        >
+          重新加载
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ============================================
+// 主应用组件
+// ============================================
+function CalculatorApp() {
   const { theme, toggleTheme } = useTheme();
   const [lang, setLang] = useState<Language>('zh-CN');
   const i18n = getI18nPack(lang);
@@ -94,6 +173,16 @@ export function App() {
     });
   }, []);
 
+  // 加载中
+  if (calc.loading) {
+    return <LoadingState message="正在加载计算引擎..." />;
+  }
+
+  // 加载出错
+  if (calc.error) {
+    return <ErrorState message={calc.error} />;
+  }
+
   // 从插件系统获取当前模式渲染
   const currentPlugin = getPlugin(activeMode);
   const rendered = currentPlugin?.render(i18n, theme);
@@ -107,7 +196,6 @@ export function App() {
 
   return (
     <div className="calc-app">
-      {/* 语言切换 */}
       <button className="calc-lang-toggle" onClick={cycleLang} type="button">
         {lang === 'zh-CN' ? '简体' : lang === 'zh-TW' ? '繁体' : 'EN'}
       </button>
@@ -129,5 +217,16 @@ export function App() {
         buttons={rendered?.buttons ?? <div>Loading...</div>}
       />
     </div>
+  );
+}
+
+// ============================================
+// 根组件（包裹错误边界）
+// ============================================
+export function App() {
+  return (
+    <ErrorBoundary>
+      <CalculatorApp />
+    </ErrorBoundary>
   );
 }

@@ -12,7 +12,7 @@ module.exports = {
     filename: isDev ? 'js/[name].js' : 'js/[name].[contenthash:8].js',
     chunkFilename: isDev ? 'js/[name].chunk.js' : 'js/[name].[contenthash:8].chunk.js',
     clean: true,
-    publicPath: '/',
+    publicPath: process.env.PUBLIC_URL || '/',
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.wasm'],
