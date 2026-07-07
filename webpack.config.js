@@ -9,8 +9,8 @@ module.exports = {
   entry: './src/index.tsx',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: isDev ? 'js/[name].js' : 'js/[name].[contenthash:8].js',
-    chunkFilename: isDev ? 'js/[name].chunk.js' : 'js/[name].[contenthash:8].chunk.js',
+    filename: 'js/[name].[contenthash:8].js',
+    chunkFilename: 'js/[name].[contenthash:8].chunk.js',
     clean: true,
     publicPath: process.env.PUBLIC_URL || '/',
   },
@@ -45,7 +45,7 @@ module.exports = {
               transform: {
                 react: {
                   runtime: 'automatic',
-                  development: isDev,
+                  development: false,
                   refresh: false,
                 },
               },

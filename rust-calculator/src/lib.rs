@@ -1,6 +1,7 @@
 mod state;
 mod engine;
 mod parser;
+mod bitwise;
 
 pub use state::{CalculatorState, CalculatorMode, Operator};
 pub use engine::CalculatorEngine;
@@ -107,6 +108,55 @@ pub fn evaluate_expression(expr: &str, angle_mode: &str) -> String {
 impl Default for WasmCalculator {
     fn default() -> Self {
         Self::new()
+    }
+}
+
+/// 程序员模式：位运算
+/// op: "and"|"or"|"xor"|"not"|"lshift"|"rshift"
+/// a, b: 操作数（十进制字符串）
+/// result_base: "hex"|"dec"|"oct"|"bin"
+#[wasm_bindgen]
+pub fn bitwise_calc(op: &str, a: &str, b: &str, result_base: &str) -> String {
+    use bitwise::*;
+    let a_val = parse_value(a, Base::Dec).unwrap_or(0);
+    let b_val = parse_value(b, Base::Dec).unwrap_or(0);
+    let bit_op = match op {
+        "and" => BitOp::And,
+        "or" => BitOp::Or,
+        "xor" => BitOp::Xor,
+        "not" => BitOp::Not,
+        "lshift" => BitOp::LShift,
+        "rshift" => BitOp::RShift,
+        _ => return "无效操作".to_string(),
+    };
+    let result = execute_bitwise(bit_op, a_val, b_val);
+    let base = match result_base {
+        "hex" => Base::Hex,
+        "oct" => Base::Oct,
+        "bin" => Base::Bin,
+        _ => Base::Dec,
+    };
+    format_value(result, base)
+}
+
+/// 程序员模式：进制转换
+/// value: 输入字符串，from_base: "hex"|"dec"|"oct"|"bin"
+/// 返回 JSON 数组 [hex, dec, oct, bin]
+#[wasm_bindgen]
+pub fn convert_base(value: &str, from_base: &str) -> String {
+    use bitwise::*;
+    let base = match from_base {
+        "hex" => Base::Hex,
+        "oct" => Base::Oct,
+        "bin" => Base::Bin,
+        _ => Base::Dec,
+    };
+    match convert_all(value, base) {
+        Ok(results) => format!(
+            r#"["{}","{}","{}","{}"]"#,
+            results[0], results[1], results[2], results[3]
+        ),
+        Err(e) => format!(r#"["","","","错误: {}"]"#, e),
     }
 }
 

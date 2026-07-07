@@ -446,6 +446,257 @@ body {
 .sci-func-btn:hover { background: var(--btn-function-hover); }
 .sci-func-btn:active { background: var(--btn-function-active); transform: scale(0.95); }
 
+/* --- 程序员计算面板 --- */
+.prog-panel { width: 100%; }
+
+.prog-row {
+  display: flex;
+  align-items: center;
+  padding: 6px 10px;
+  margin-bottom: 4px;
+  border-radius: 8px;
+  background: var(--surface);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.prog-row:hover { background: var(--surface-hover); }
+.prog-row--active { border-color: var(--btn-equals-color); background: var(--surface-hover); }
+
+.prog-row__label {
+  width: 40px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+.prog-row__value {
+  flex: 1;
+  text-align: right;
+  font-size: 1rem;
+  font-family: 'Consolas', 'Menlo', monospace;
+  color: var(--text-primary);
+  letter-spacing: 0.5px;
+}
+
+.prog-bit-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 4px;
+  margin: 8px 0;
+}
+
+.prog-bit-btn {
+  padding: 6px 2px;
+  border: none;
+  border-radius: 6px;
+  background: var(--btn-operator-bg);
+  color: var(--btn-operator-color);
+  font-size: 0.75rem;
+  font-family: 'Consolas', 'Menlo', monospace;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.prog-bit-btn:hover { background: var(--btn-operator-hover); }
+.prog-bit-btn:active { transform: scale(0.95); }
+
+.prog-digit-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.prog-digit-btn {
+  padding: 8px 2px;
+  border: none;
+  border-radius: 6px;
+  background: var(--btn-number-bg);
+  color: var(--btn-number-color);
+  font-size: 0.85rem;
+  font-family: 'Consolas', 'Menlo', monospace;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.prog-digit-btn:hover { background: var(--btn-number-hover); }
+.prog-digit-btn:active { transform: scale(0.95); }
+.prog-digit-btn--disabled { opacity: 0.25; pointer-events: none; }
+
+.prog-action-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.prog-action-btn {
+  padding: 8px 18px;
+  border: none;
+  border-radius: 8px;
+  background: var(--btn-function-bg);
+  color: var(--btn-function-color);
+  font-size: 0.9rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.prog-action-btn:hover { background: var(--btn-function-hover); }
+.prog-action-btn:active { transform: scale(0.95); }
+
+.prog-action__hint {
+  margin-left: auto;
+  font-size: 0.7rem;
+  color: var(--text-dim);
+}
+
+.prog-result {
+  margin-top: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--display-bg);
+  font-size: 0.9rem;
+  font-family: 'Consolas', 'Menlo', monospace;
+  color: var(--text-primary);
+  text-align: right;
+}
+
+/* --- 日期计算面板 --- */
+.date-panel { width: 100%; }
+
+.date-section { margin-bottom: 12px; }
+.date-section__title {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.date-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+.date-field input[type="date"] {
+  padding: 5px 8px;
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text-primary);
+  font-size: 0.8rem;
+  font-family: inherit;
+  outline: none;
+}
+
+.date-add-fields {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+.date-add-fields input {
+  flex: 1;
+  padding: 6px 8px;
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text-primary);
+  font-size: 0.8rem;
+  font-family: inherit;
+  outline: none;
+  text-align: center;
+}
+
+.date-calc-btn {
+  width: 100%;
+  padding: 8px;
+  border: none;
+  border-radius: 8px;
+  background: var(--btn-equals-bg);
+  color: var(--btn-equals-color);
+  font-size: 0.85rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.date-calc-btn:hover { background: var(--btn-equals-hover); }
+.date-calc-btn:active { transform: scale(0.95); }
+
+.date-divider {
+  height: 1px;
+  background: var(--border-light);
+  margin: 12px 0;
+}
+
+.date-result {
+  margin-top: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--display-bg);
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+/* --- 侧边栏历史记录 --- */
+.calc-sidebar__history {
+  padding: 4px 12px 16px;
+  min-width: 196px;
+}
+.calc-sidebar__history-toggle {
+  width: 100%;
+  padding: 6px 10px;
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.12s;
+}
+.calc-sidebar__history-toggle:hover { background: var(--surface-hover); color: var(--text-primary); }
+
+.calc-sidebar__history-list {
+  margin-top: 6px;
+  max-height: 220px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.calc-sidebar__history-empty { font-size: 0.72rem; color: var(--text-dim); text-align: center; padding: 8px; }
+.calc-sidebar__history-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.calc-sidebar__history-item:hover { background: var(--surface); }
+.calc-sidebar__history-body { flex: 1; min-width: 0; }
+.calc-sidebar__history-expr { display: block; font-size: 0.68rem; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.calc-sidebar__history-result { display: block; font-size: 0.82rem; color: var(--text-primary); font-weight: 500; }
+.calc-sidebar__history-del {
+  width: 18px; height: 18px;
+  border: none; border-radius: 50%;
+  background: transparent; color: var(--text-dim);
+  font-size: 0.8rem; cursor: pointer; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.calc-sidebar__history-del:hover { background: var(--surface-active); color: var(--error-color); }
+.calc-sidebar__history-clear {
+  width: 100%; padding: 5px;
+  border: none; border-radius: 4px;
+  background: transparent; color: var(--error-color);
+  font-size: 0.7rem; cursor: pointer; margin-top: 4px;
+}
+.calc-sidebar__history-clear:hover { background: rgba(239,83,80,0.08); }
+
 /* --- 占位符（未实现模式） --- */
 .calc-placeholder {
   display: flex;

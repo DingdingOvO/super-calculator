@@ -1,0 +1,129 @@
+# ===========================================
+# Bundle Size 监控工作流
+# 每次 PR 时对比构建产物体积变化
+# 若增长超过 5KB 则在 PR 评论区提醒
+# ===========================================
+name: Bundle Size
+
+on:
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: bundle-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '22'
+
+jobs:
+  compare:
+    name: Compare Bundle Size
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Setup Rust & Build WASM
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - name: Install wasm-pack
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+      - name: Build WASM
+        run: cd rust-calculator && wasm-pack build --target bundler --release
+
+      - name: Build PR Bundle
+        run: npm run build
+        env:
+          PUBLIC_URL: /
+
+      - name: Measure PR Size
+        id: pr-size
+        run: |
+          echo "pr_total=$(du -sb dist/ | cut -f1)" >> $GITHUB_OUTPUT
+          echo "pr_wasm=$(ls -l dist/*.wasm 2>/dev/null | awk '{sum+=$5} END {print sum}')" >> $GITHUB_OUTPUT
+          echo "pr_js=$(du -sb dist/js/ | cut -f1)" >> $GITHUB_OUTPUT
+          echo "pr_css=$(du -sb dist/css/ | cut -f1)" >> $GITHUB_OUTPUT
+
+      - name: Checkout main branch
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          clean: false
+
+      - name: Install main Dependencies
+        run: npm install
+
+      - name: Build main WASM
+        run: cd rust-calculator && wasm-pack build --target bundler --release
+
+      - name: Build main Bundle
+        run: npm run build
+        env:
+          PUBLIC_URL: /
+
+      - name: Measure main Size
+        id: main-size
+        run: |
+          echo "main_total=$(du -sb dist/ | cut -f1)" >> $GITHUB_OUTPUT
+          echo "main_wasm=$(ls -l dist/*.wasm 2>/dev/null | awk '{sum+=$5} END {print sum}')" >> $GITHUB_OUTPUT
+          echo "main_js=$(du -sb dist/js/ | cut -f1)" >> $GITHUB_OUTPUT
+          echo "main_css=$(du -sb dist/css/ | cut -f1)" >> $GITHUB_OUTPUT
+
+      - name: Compare & Comment
+        id: compare
+        run: |
+          PR_TOTAL=${{ steps.pr-size.outputs.pr_total }}
+          MAIN_TOTAL=${{ steps.main-size.outputs.main_total }}
+          DIFF=$((PR_TOTAL - MAIN_TOTAL))
+          MAX_INCREASE=5120  # 5KB
+          cat <<EOF > /tmp/comment.md
+          ## Bundle Size Report
+
+          | Category | Main | PR | Difference |
+          |----------|------|----|------------|
+          | **Total** | $(numfmt --to=iec $MAIN_TOTAL) | $(numfmt --to=iec $PR_TOTAL) | $(printf '%+d' $DIFF) bytes |
+          | JS | $(numfmt --to=iec ${{ steps.main-size.outputs.main_js }}) | $(numfmt --to=iec ${{ steps.pr-size.outputs.pr_js }}) | |
+          | CSS | $(numfmt --to=iec ${{ steps.main-size.outputs.main_css }}) | $(numfmt --to=iec ${{ steps.pr-size.outputs.pr_css }}) | |
+          | WASM | $(numfmt --to=iec ${{ steps.main-size.outputs.main_wasm }}) | $(numfmt --to=iec ${{ steps.pr-size.outputs.pr_wasm }}) | |
+          EOF
+          if [ $DIFF -gt $MAX_INCREASE ]; then
+            echo "⚠️  **体积警告**：PR 总包体增加了 $(numfmt --to=iec $DIFF)，超过 5KB 阈值！" >> /tmp/comment.md
+            echo "alert=true" >> $GITHUB_OUTPUT
+            echo "diff=$DIFF" >> $GITHUB_OUTPUT
+          else
+            echo "✅ 包体积在正常范围内。" >> /tmp/comment.md
+            echo "alert=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Comment PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const body = fs.readFileSync('/tmp/comment.md', 'utf8');
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
+
+      - name: Fail if oversized
+        if: steps.compare.outputs.alert == 'true'
+        run: |
+          echo "⚠️ 包体增长超过 5KB (${{ steps.compare.outputs.diff }} bytes)。请检查引入的依赖。"
+          exit 1

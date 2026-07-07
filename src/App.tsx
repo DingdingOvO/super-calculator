@@ -3,14 +3,15 @@
 import { useState, useCallback, useEffect, Component, type ReactNode } from 'react';
 import { useWasmCalculator } from '@hooks/useCalculator';
 import { useTheme } from '@hooks/useTheme';
+import { useHistory } from '@hooks/useHistory';
 import { Display } from '@components/Display';
 import { getI18nPack } from '@i18n/index';
 import type { Language } from '@i18n/types';
 import { registerPlugin, getPlugin } from '@plugins/registry';
 import { createStandardPlugin } from '@plugins/Standard/index';
 import { createScientificPlugin } from '@plugins/Scientific/index';
-import { createProgrammerPlaceholder } from '@plugins/Programmer/index';
-import { createDateCalculationPlaceholder } from '@plugins/DateCalculation/index';
+import { createProgrammerPlugin } from '@plugins/Programmer/index';
+import { createDateCalculationPlugin } from '@plugins/DateCalculation/index';
 import { MenuIcon } from '@components/icons/Menu';
 import { MoonIcon } from '@components/icons/Moon';
 import { SunIcon } from '@components/icons/Sun';
@@ -82,8 +83,10 @@ function CalculatorApp() {
   const i18n = getI18nPack(lang);
   const [activeMode, setActiveMode] = useState('standard');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
 
   const calc = useWasmCalculator();
+  const history = useHistory();
 
   useEffect(() => {
     registerPlugin(createStandardPlugin({
@@ -99,8 +102,8 @@ function CalculatorApp() {
       onClear: calc.clear,
       onBackspace: calc.backspace,
     }));
-    registerPlugin(createProgrammerPlaceholder());
-    registerPlugin(createDateCalculationPlaceholder());
+    registerPlugin(createProgrammerPlugin());
+    registerPlugin(createDateCalculationPlugin());
   }, [calc.inputDigit, calc.inputOperator, calc.evaluate, calc.clear, calc.backspace, calc.negate, calc.percent]);
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
@@ -132,8 +135,8 @@ function CalculatorApp() {
   const modes = [
     { id: 'standard', label: i18n.modes.standard, disabled: false },
     { id: 'scientific', label: i18n.modes.scientific, disabled: false },
-    { id: 'programmer', label: i18n.modes.programmer, disabled: true },
-    { id: 'date-calculation', label: i18n.modes.dateCalculation, disabled: true },
+    { id: 'programmer', label: i18n.modes.programmer, disabled: false },
+    { id: 'date-calculation', label: i18n.modes.dateCalculation, disabled: false },
   ];
 
   const activeModeLabel = modes.find(m => m.id === activeMode)?.label ?? '';
@@ -157,7 +160,7 @@ function CalculatorApp() {
               >
               <span>{m.label}</span>
               <span className="calc-sidebar__badge">
-                {m.id === 'scientific' ? 'BETA' : m.disabled ? '即将推出' : ''}
+                {m.disabled ? '即将推出' : ''}
               </span>
               </button>
             ))}
@@ -173,6 +176,31 @@ function CalculatorApp() {
               <option value="zh-TW">繁體中文</option>
               <option value="en">English</option>
             </select>
+          </div>
+
+          {/* 历史记录 */}
+          <div className="calc-sidebar__divider" />
+          <div className="calc-sidebar__history">
+            <button className="calc-sidebar__history-toggle" onClick={() => setHistoryOpen(v => !v)} type="button">
+              历史记录 ({history.entries.length})
+            </button>
+            {historyOpen && (
+              <div className="calc-sidebar__history-list">
+                {history.entries.length === 0 && <p className="calc-sidebar__history-empty">暂无记录</p>}
+                {history.entries.map(e => (
+                  <div key={e.id} className="calc-sidebar__history-item">
+                    <div className="calc-sidebar__history-body" onClick={() => {/* TODO: redo */}}>
+                      <span className="calc-sidebar__history-expr">{e.expression || '='}</span>
+                      <span className="calc-sidebar__history-result">{e.result}</span>
+                    </div>
+                    <button className="calc-sidebar__history-del" onClick={() => history.removeEntry(e.id)} type="button">×</button>
+                  </div>
+                ))}
+                {history.entries.length > 0 && (
+                  <button className="calc-sidebar__history-clear" onClick={history.clearAll} type="button">清空全部</button>
+                )}
+              </div>
+            )}
           </div>
         </aside>
 
