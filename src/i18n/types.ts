@@ -69,6 +69,30 @@ export interface I18nPack {
     angleRad: string;
     expressionPlaceholder: string;
   };
+  dateCalc: {
+    tabAdd: string;
+    tabDiff: string;
+    tabRange: string;
+    tabTs: string;
+    today: string;
+    start: string;
+    end: string;
+    from: string;
+    to: string;
+    year: string;
+    month: string;
+    day: string;
+    totalDays: string;
+    totalWeeks: string;
+    totalMonths: string;
+    totalYears: string;
+    workdays: string;
+    count: string;
+    convert: string;
+    placeholder: string;
+    invalid: string;
+    dow: string[];  // day of week, 7 items
+  };
 }
 
 export type I18nKey = keyof I18nPack;

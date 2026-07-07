@@ -653,118 +653,59 @@ body {
 }
 
 /* --- 日期计算面板 --- */
-.date-panel {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
+.dc { width: 100%; }
 
-.date-card {
-  background: var(--surface);
-  border: 1px solid var(--border-light);
-  border-radius: 12px;
-  overflow: hidden;
+.dc-tabs { display: flex; gap: 6px; margin-bottom: 12px; }
+.dc-tab {
+  flex: 1; padding: 8px 0; border: none; border-radius: 8px;
+  background: var(--surface); color: var(--text-secondary);
+  font-size: 0.8rem; font-family: inherit; cursor: pointer; transition: all 0.12s;
 }
+.dc-tab--on { background: var(--tab-active-bg); color: var(--text-primary); font-weight: 500; }
+.dc-tab:hover { background: var(--tab-hover-bg); }
 
-.date-card__title {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-  padding: 8px 12px;
-  border-bottom: 1px solid var(--border-light);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
+.dc-c { background: var(--surface); border: 1px solid var(--border-light); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
 
-.date-card__body {
-  padding: 12px;
-}
+.dc-fl { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 0.85rem; color: var(--text-secondary); }
+.dc-fl span { width: 32px; flex-shrink: 0; }
+.dc-fl input[type="date"] { flex: 1; padding: 8px 10px; border: 1px solid var(--border-light); border-radius: 8px; background: var(--btn-number-bg); color: var(--text-primary); font-size: 0.88rem; font-family: inherit; outline: none; }
+.dc-fl input[type="date"]:focus { border-color: var(--btn-equals-color); }
+.dc-fl input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.5); cursor: pointer; }
+[data-theme='dark'] .dc-fl input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); }
 
-.date-picker {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-}
-.date-picker input[type="date"] {
-  padding: 6px 10px;
-  border: 1px solid var(--border-light);
-  border-radius: 8px;
-  background: var(--btn-number-bg);
-  color: var(--text-primary);
-  font-size: 0.82rem;
-  font-family: inherit;
-  outline: none;
-  transition: all 0.12s;
-}
-.date-picker input[type="date"]:focus {
-  border-color: var(--btn-equals-color);
-}
-.date-picker input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(0.5);
-  cursor: pointer;
-}
-[data-theme='dark'] .date-picker input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(1);
-}
+.dc-td { padding: 6px 16px; border: 1px solid var(--border-light); border-radius: 6px; background: var(--btn-function-bg); color: var(--text-secondary); font-size: 0.78rem; cursor: pointer; font-family: inherit; flex-shrink: 0; }
+.dc-td:hover { background: var(--btn-function-hover); }
 
-.date-num-row {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 10px;
-}
-.date-num-row label {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 0.75rem;
-  color: var(--text-secondary);
-}
-.date-num-row input {
-  width: 100%;
-  padding: 6px 4px;
-  border: 1px solid var(--border-light);
-  border-radius: 8px;
-  background: var(--btn-number-bg);
-  color: var(--text-primary);
-  font-size: 0.82rem;
-  font-family: inherit;
-  text-align: center;
-  outline: none;
-  transition: all 0.12s;
-}
-.date-num-row input:focus {
-  border-color: var(--btn-equals-color);
-}
+.dc-nm { display: flex; gap: 8px; margin-bottom: 12px; }
+.dc-nm label { flex: 1; display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: var(--text-secondary); }
+.dc-nm input { width: 100%; padding: 8px 6px; border: 1px solid var(--border-light); border-radius: 8px; background: var(--btn-number-bg); color: var(--text-primary); font-size: 0.88rem; text-align: center; outline: none; font-family: inherit; }
+.dc-nm input:focus { border-color: var(--btn-equals-color); }
 
-.date-card__action {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 8px;
-}
+.dc-go { width: 100%; padding: 10px; border: none; border-radius: 8px; background: var(--btn-equals-bg); color: var(--btn-equals-color); font-size: 0.88rem; font-family: inherit; cursor: pointer; transition: all 0.12s; margin-bottom: 8px; font-weight: 500; }
+.dc-go:hover { background: var(--btn-equals-hover); }
+.dc-go:active { transform: scale(0.97); }
 
-.date-go-btn {
-  width: auto !important;
-  height: 36px !important;
-  padding: 0 24px !important;
-  font-size: 0.82rem !important;
-  border-radius: 8px !important;
-}
+.dc-rs { padding: 10px 14px; border-radius: 8px; background: var(--display-bg); font-size: 1.05rem; font-weight: 500; color: var(--text-primary); text-align: center; }
 
-.date-card__result {
-  padding: 10px 12px;
-  border-radius: 8px;
-  background: var(--display-bg);
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: var(--text-primary);
-  text-align: center;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-}
+.dc-rb { padding: 10px 14px; border-radius: 8px; background: var(--display-bg); }
+.dc-rl { display: flex; justify-content: space-between; padding: 5px 0; font-size: 0.85rem; color: var(--text-secondary); border-bottom: 1px solid var(--border-light); }
+.dc-rl:last-child { border-bottom: none; }
+.dc-rl b { color: var(--text-primary); }
+
+.dc-sc { max-height: 200px; overflow-y: auto; margin-top: 8px; }
+.dc-cnt { font-size: 0.78rem; color: var(--text-dim); text-align: center; margin-top: 8px; }
+.dc-ri { padding: 5px 8px; font-size: 0.8rem; color: var(--text-primary); border-bottom: 1px solid var(--border-light); }
+
+.dc-wi { width: 100%; padding: 10px; border: 1px solid var(--border-light); border-radius: 8px; background: var(--btn-number-bg); color: var(--text-primary); font-size: 0.88rem; outline: none; font-family: inherit; margin-bottom: 8px; }
+
+/* 迷你日历 */
+.mc { width: 100%; border-collapse: collapse; }
+.mc-h { font-size: 0.7rem; color: var(--text-dim); padding: 6px; text-align: center; font-weight: 400; }
+.mc-d { font-size: 0.78rem; text-align: center; padding: 7px 0; color: var(--text-primary); border-radius: 6px; cursor: pointer; transition: background 0.1s; }
+.mc-e { background: transparent; }
+.mc-d--h { color: var(--error-color); font-weight: 500; cursor: help; }
+.mc-d--sel { background: var(--btn-equals-bg) !important; color: var(--btn-equals-color) !important; font-weight: 600; }
+.mc-d:hover { background: var(--surface); }
 
 /* --- 侧边栏历史记录 --- */
 .calc-sidebar__history {
