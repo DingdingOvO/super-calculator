@@ -11,6 +11,7 @@ export interface I18nPack {
     scientific: string;
     programmer: string;
     dateCalculation: string;
+    graphing: string;
   };
   buttons: {
     mc: string;

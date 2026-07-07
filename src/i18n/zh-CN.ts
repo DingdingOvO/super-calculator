@@ -7,6 +7,7 @@ const zhCN: I18nPack = {
     scientific: '科学',
     programmer: '程序员',
     dateCalculation: '日期计算',
+    graphing: '绘图',
   },
   buttons: {
     mc: 'MC',

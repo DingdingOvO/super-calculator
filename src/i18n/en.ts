@@ -7,6 +7,7 @@ const en: I18nPack = {
     scientific: 'Scientific',
     programmer: 'Programmer',
     dateCalculation: 'Date Calculation',
+    graphing: 'Graphing',
   },
   buttons: {
     mc: 'MC',

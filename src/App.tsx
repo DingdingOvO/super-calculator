@@ -12,6 +12,7 @@ import { createStandardPlugin } from '@plugins/Standard/index';
 import { createScientificPlugin } from '@plugins/Scientific/index';
 import { createProgrammerPlugin } from '@plugins/Programmer/index';
 import { createDateCalculationPlugin } from '@plugins/DateCalculation/index';
+import { createGraphingPlugin } from '@plugins/Graphing/index';
 import { MenuIcon } from '@components/icons/Menu';
 import { MoonIcon } from '@components/icons/Moon';
 import { SunIcon } from '@components/icons/Sun';
@@ -102,6 +103,7 @@ function CalculatorApp() {
     registerPlugin(createScientificPlugin());
     registerPlugin(createProgrammerPlugin());
     registerPlugin(createDateCalculationPlugin());
+    registerPlugin(createGraphingPlugin());
   }, [calc.inputDigit, calc.inputOperator, calc.evaluate, calc.clear, calc.backspace, calc.negate, calc.percent]);
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
@@ -134,6 +136,7 @@ function CalculatorApp() {
   const modes = [
     { id: 'standard', label: i18n.modes.standard, disabled: false },
     { id: 'scientific', label: i18n.modes.scientific, disabled: false },
+    { id: 'graphing', label: i18n.modes.graphing, disabled: false },
     { id: 'programmer', label: i18n.modes.programmer, disabled: false },
     { id: 'date-calculation', label: i18n.modes.dateCalculation, disabled: false },
   ];

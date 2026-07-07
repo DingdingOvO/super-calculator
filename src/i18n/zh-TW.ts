@@ -9,6 +9,7 @@ const zhTW: I18nPack = {
     scientific: '工程型',
     programmer: '程式設計師',
     dateCalculation: '日期計算',
+    graphing: '繪圖',
   },
   buttons: {
     mc: 'MC',
