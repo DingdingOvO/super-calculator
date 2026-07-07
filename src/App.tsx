@@ -99,10 +99,7 @@ function CalculatorApp() {
       onNegate: calc.negate,
       onPercent: calc.percent,
     }));
-    registerPlugin(createScientificPlugin({
-      onClear: calc.clear,
-      onBackspace: calc.backspace,
-    }));
+    registerPlugin(createScientificPlugin());
     registerPlugin(createProgrammerPlugin());
     registerPlugin(createDateCalculationPlugin());
   }, [calc.inputDigit, calc.inputOperator, calc.evaluate, calc.clear, calc.backspace, calc.negate, calc.percent]);

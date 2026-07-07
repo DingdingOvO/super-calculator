@@ -31,9 +31,14 @@ enum Token {
     Sin,
     Cos,
     Tan,
+    Asin,
+    Acos,
+    Atan,
     Log,
     Ln,
     Sqrt,
+    Cbrt,
+    Exp,        // eˣ
     Factorial,  // !
     Square,     // ²
     Cube,       // ³
@@ -98,14 +103,15 @@ impl Lexer {
                 }
                 'e' | 'E' => {
                     self.advance();
-                    // 检查是否是独立的 e (常数) 还是函数名开头
                     match self.peek() {
-                        Some(c) if c.is_ascii_alphabetic() || c == '(' => {
-                            // 可能是 "e" 常数后跟表达式，或者是 "e" 在数字科学计数法中？
-                            // 在科学计数法语境下我们不处理，直接作为常数 e
-                            Ok(Token::E)
+                        Some('x') | Some('X') => {
+                            self.advance();
+                            if self.peek() == Some('p') || Some('P') == self.peek() {
+                                self.advance(); Ok(Token::Exp)
+                            } else { Ok(Token::E) } // "ex" not recognized, treat as e
                         }
-                        _ => Ok(Token::E)
+                        Some(' ') | None | Some('(') | Some(')') | Some('+') | Some('-') | Some('*') | Some('/') | Some('^') | Some('!') => Ok(Token::E),
+                        _ => Ok(Token::E),
                     }
                 }
                 's' | 'S' => {
@@ -137,18 +143,60 @@ impl Lexer {
                         _ => Err("未知标识符: s".to_string())
                     }
                 }
+                'a' | 'A' => {
+                    self.advance();
+                    match self.peek() {
+                        Some('s') | Some('S') => {
+                            self.advance();
+                            if self.peek() == Some('i') || Some('I') == self.peek() {
+                                self.advance();
+                                if self.peek() == Some('n') || Some('N') == self.peek() {
+                                    self.advance(); Ok(Token::Asin)
+                                } else { Err("未知标识符: asi".to_string()) }
+                            } else if self.peek() == Some('c') || Some('C') == self.peek() {
+                                self.advance();
+                                if self.peek() == Some('o') || Some('O') == self.peek() {
+                                    self.advance();
+                                    if self.peek() == Some('s') || Some('S') == self.peek() {
+                                        self.advance(); Ok(Token::Acos)
+                                    } else { Err("未知标识符: aco".to_string()) }
+                                } else { Err("未知标识符: ac".to_string()) }
+                            } else if self.peek() == Some('t') || Some('T') == self.peek() {
+                                self.advance();
+                                if self.peek() == Some('a') || Some('A') == self.peek() {
+                                    self.advance();
+                                    if self.peek() == Some('n') || Some('N') == self.peek() {
+                                        self.advance(); Ok(Token::Atan)
+                                    } else { Err("未知标识符: ata".to_string()) }
+                                } else { Err("未知标识符: at".to_string()) }
+                            } else { Err("未知标识符: as".to_string()) }
+                        }
+                        _ => Err("未知标识符: a".to_string())
+                    }
+                }
                 'c' | 'C' => {
                     self.advance();
-                    if self.peek() == Some('o') || self.peek() == Some('O') {
-                        self.advance();
-                        if self.peek() == Some('s') || self.peek() == Some('S') {
+                    match self.peek() {
+                        Some('o') | Some('O') => {
                             self.advance();
-                            Ok(Token::Cos)
-                        } else {
-                            Err("未知标识符: co".to_string())
+                            if self.peek() == Some('s') || self.peek() == Some('S') {
+                                self.advance();
+                                Ok(Token::Cos)
+                            } else {
+                                Err("未知标识符: co".to_string())
+                            }
                         }
-                    } else {
-                        Err("未知标识符: c".to_string())
+                        Some('b') | Some('B') => {
+                            self.advance();
+                            if self.peek() == Some('r') || self.peek() == Some('R') {
+                                self.advance();
+                                if self.peek() == Some('t') || self.peek() == Some('T') {
+                                    self.advance();
+                                    Ok(Token::Cbrt)
+                                } else { Err("未知标识符: cbr".to_string()) }
+                            } else { Err("未知标识符: cb".to_string()) }
+                        }
+                        _ => Err("未知标识符: c".to_string())
                     }
                 }
                 't' | 'T' => {
@@ -352,6 +400,11 @@ impl Parser {
             Token::Sqrt => self.parse_function(|x| {
                 if x < 0.0 { Err("负数不能开平方".to_string()) } else { Ok(x.sqrt()) }
             }),
+            Token::Cbrt => self.parse_function(|x| Ok(x.cbrt())),
+            Token::Exp => self.parse_function(|x| Ok(x.exp())),
+            Token::Asin => self.parse_function(trig_asin),
+            Token::Acos => self.parse_function(trig_acos),
+            Token::Atan => self.parse_function(trig_atan),
             _ => Err(format!("意外的语法元素: {:?}", self.current)),
         }
     }
@@ -394,6 +447,20 @@ fn trig_tan(x: f64) -> Result<f64, String> {
         return Err("tan 无定义".to_string());
     }
     Ok(libm::tan(rad))
+}
+
+fn trig_asin(x: f64) -> Result<f64, String> {
+    let rad = x * consts::PI / 180.0;
+    Ok(libm::asin(rad) * 180.0 / consts::PI)
+}
+
+fn trig_acos(x: f64) -> Result<f64, String> {
+    let rad = x * consts::PI / 180.0;
+    Ok(libm::acos(rad) * 180.0 / consts::PI)
+}
+
+fn trig_atan(x: f64) -> Result<f64, String> {
+    Ok(libm::atan(x) * 180.0 / consts::PI)
 }
 
 /// 阶乘计算

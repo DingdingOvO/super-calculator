@@ -402,85 +402,141 @@ body {
 .calc-btn--equals:active { background: var(--btn-equals-active); transform: scale(0.95); }
 
 /* --- 科学计算面板 --- */
-.sci-panel {
-  width: 100%;
-}
+.sc { width: 100%; }
 
-.sci-input-row {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 8px;
-}
-
-.sci-input {
-  flex: 1;
-  padding: 8px 10px;
-  border: 1px solid var(--border-light);
-  border-radius: 8px;
-  background: var(--surface);
-  color: var(--text-primary);
-  font-size: 0.9rem;
-  font-family: 'Consolas', 'Menlo', monospace;
-  outline: none;
-  transition: all 0.15s;
-}
-.sci-input:focus {
-  border-color: var(--btn-equals-color);
-  background: var(--surface-hover);
-}
-
-.sci-angle-toggle {
-  padding: 4px 10px;
-  border: 1px solid var(--border-light);
-  border-radius: 6px;
-  background: var(--btn-equals-bg);
-  color: var(--btn-equals-color);
-  font-size: 0.7rem;
-  font-weight: 600;
-  font-family: inherit;
-  cursor: pointer;
-  transition: all 0.15s;
-  white-space: nowrap;
-}
-.sci-angle-toggle:hover { background: var(--btn-equals-hover); }
-.sci-angle-toggle--rad { background: var(--btn-operator-bg); color: var(--btn-operator-color); }
-.sci-angle-toggle--rad:hover { background: var(--btn-operator-hover); }
-
-.sci-result {
-  padding: 8px 10px;
-  margin-bottom: 8px;
-  border-radius: 8px;
+/* 显示屏 */
+.sc-display {
+  padding: 12px;
+  margin-bottom: 6px;
+  border-radius: 10px;
   background: var(--display-bg);
-  font-size: 1.3rem;
-  font-weight: 300;
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  position: relative;
+}
+.sc-display__mode {
+  position: absolute; top: 8px; right: 10px;
+  font-size: 0.65rem; font-weight: 600;
+  color: var(--btn-equals-color);
+  letter-spacing: 0.5px;
+}
+.sc-display__expr {
+  font-size: 0.78rem; color: var(--expression-color);
+  word-break: break-all; text-align: right;
+  min-height: 1.2em; margin-bottom: 2px;
+  max-height: 3em; overflow-y: auto;
+}
+.sc-display__result {
+  font-size: 1.6rem; font-weight: 300;
   color: var(--text-primary);
-  text-align: right;
-  font-family: 'Consolas', 'Menlo', monospace;
-  min-height: 36px;
+  text-align: right; word-break: break-all;
+  letter-spacing: -0.3px;
 }
-.sci-result--error { color: var(--error-color); font-size: 0.85rem; }
 
-.sci-func-grid {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
+/* 行 */
+.sc-row {
+  display: flex;
   gap: 4px;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
-.sci-func-btn {
-  padding: 6px 2px;
-  border: none;
-  border-radius: 6px;
+.sc-row--top {
+  margin-bottom: 6px;
+}
+
+/* 通用按钮 */
+.sc-btn {
+  flex: 1;
+  height: 40px;
+  border: none; border-radius: 8px;
+  font-size: 0.82rem; font-family: inherit;
+  cursor: pointer; transition: all 0.1s ease;
+  user-select: none;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 2px;
+}
+.sc-btn:active { transform: scale(0.94); }
+
+/* 数字 */
+.sc-btn--num {
+  background: var(--btn-number-bg);
+  color: var(--btn-number-color);
+  font-size: 0.95rem;
+}
+.sc-btn--num:hover { background: var(--btn-number-hover); }
+
+/* 运算符 */
+.sc-btn--op {
+  background: var(--btn-operator-bg);
+  color: var(--btn-operator-color);
+  font-size: 1rem;
+  font-weight: 500;
+}
+.sc-btn--op:hover { background: var(--btn-operator-hover); }
+
+/* 科学函数 */
+.sc-btn--sci {
+  background: var(--btn-function-bg);
+  color: var(--btn-function-color);
+  font-size: 0.72rem;
+}
+.sc-btn--sci:hover { background: var(--btn-function-hover); }
+
+/* 功能 */
+.sc-btn--func {
   background: var(--btn-function-bg);
   color: var(--btn-function-color);
   font-size: 0.78rem;
-  font-family: inherit;
-  cursor: pointer;
-  transition: all 0.12s;
-  text-align: center;
 }
-.sci-func-btn:hover { background: var(--btn-function-hover); }
-.sci-func-btn:active { background: var(--btn-function-active); transform: scale(0.95); }
+.sc-btn--func:hover { background: var(--btn-function-hover); }
+
+/* 记忆 */
+.sc-btn--mem {
+  background: var(--btn-function-bg);
+  color: var(--text-dim);
+  font-size: 0.7rem;
+}
+.sc-btn--mem:hover { background: var(--btn-function-hover); }
+
+/* 清除（红色） */
+.sc-btn--clear {
+  background: rgba(239,83,80,0.12);
+  color: var(--error-color);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+.sc-btn--clear:hover { background: rgba(239,83,80,0.22); }
+
+/* 等号（突出） */
+.sc-btn--eq {
+  background: var(--btn-equals-bg);
+  color: var(--btn-equals-color);
+  font-size: 1.1rem;
+  font-weight: 600;
+  min-width: 48px;
+}
+.sc-btn--eq:hover { background: var(--btn-equals-hover); }
+
+/* 历史浮层 */
+.sc-history {
+  padding: 8px;
+  margin-bottom: 6px;
+  border-radius: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  max-height: 160px;
+  overflow-y: auto;
+}
+.sc-history__title { font-size: 0.7rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; }
+.sc-history__empty { font-size: 0.72rem; color: var(--text-dim); text-align: center; padding: 8px; }
+.sc-history__item {
+  padding: 4px 6px; font-size: 0.72rem; color: var(--text-primary);
+  border-radius: 4px; cursor: pointer; transition: background 0.1s;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.sc-history__item:hover { background: var(--surface-active); }
 
 /* --- 程序员计算面板 --- */
 .prog-panel { width: 100%; }
