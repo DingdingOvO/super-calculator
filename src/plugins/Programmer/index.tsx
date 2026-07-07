@@ -17,7 +17,7 @@ const ALLOWED_CHARS: Record<BaseKey, RegExp> = {
 };
 
 function formatGroup(s: string, base: BaseKey): string {
-  if (!s || s === '0') return s;
+  if (!s || s === '0') {return s;}
   const neg = s.startsWith('-');
   const abs = neg ? s.slice(1) : s;
   const size = base === 'bin' ? 4 : base === 'oct' ? 3 : base === 'hex' ? 4 : 3;
@@ -43,7 +43,7 @@ function ProgrammerPanel() {
   const convert = useCallback((val: string, from: BaseKey) => {
     try {
       const mod = wasmRef.current;
-      if (!mod) return;
+      if (!mod) {return;}
       const json = mod.convert_base(val || '0', from);
       const arr: string[] = JSON.parse(json);
       setValues({ hex: arr[0] || '0', dec: arr[1] || '0', oct: arr[2] || '0', bin: arr[3] || '0' });
@@ -75,7 +75,7 @@ function ProgrammerPanel() {
 
   const handleBitOp = useCallback((op: string) => {
     const mod = wasmRef.current;
-    if (!mod || input === '0') return;
+    if (!mod || input === '0') {return;}
     // 弹出结果输入框，输入第二个操作数
     // 简化设计：直接对当前值进行运算
     const currentDec = values.dec.replace(/\s/g, '');

@@ -8,7 +8,7 @@ export function useTheme() {
   const [theme, setTheme] = useState<ThemeMode>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('calculator-theme') as ThemeMode | null;
-      if (saved === 'light' || saved === 'dark') return saved;
+      if (saved === 'light' || saved === 'dark') {return saved;}
       return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
     return 'light';

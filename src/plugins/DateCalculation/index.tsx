@@ -23,7 +23,7 @@ function DateCalc() {
     const days = Math.floor(ms / 86400000);
     let y = Math.abs(d2.getFullYear() - d1.getFullYear());
     let m = Math.abs((d2.getFullYear() * 12 + d2.getMonth()) - (d1.getFullYear() * 12 + d1.getMonth()));
-    if (d2.getDate() < d1.getDate()) m--;
+    if (d2.getDate() < d1.getDate()) {m--;}
     if (m < 0) { y--; m += 12; }
     setDiffOut(`${days} 天（${y} 年 ${m} 个月）`);
   }, [diffStart, diffEnd]);

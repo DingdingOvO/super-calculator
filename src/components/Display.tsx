@@ -12,13 +12,13 @@ interface DisplayProps {
 
 /** 根据显示字符长度计算字体大小 */
 function calcFontSize(text: string, hasError: boolean): string {
-  if (hasError) return '1.2rem';
+  if (hasError) {return '1.2rem';}
   const len = text.length;
-  if (len <= 10) return '2.5rem';
-  // 10→2.5rem, 逐渐线性缩小到 20→1.2rem
+  if (len <= 10) {return '2.8rem';}
+  // 10→2.8rem, 逐渐线性缩小到 20→1.4rem
   const clamped = Math.min(Math.max(len, 10), 20);
-  const ratio = (clamped - 10) / 10; // 0→1
-  const size = 2.5 - ratio * (2.5 - 1.2);
+  const ratio = (clamped - 10) / 10;
+  const size = 2.8 - ratio * (2.8 - 1.4);
   return `${size.toFixed(2)}rem`;
 }
 

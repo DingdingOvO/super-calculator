@@ -13,6 +13,7 @@ module.exports = {
     chunkFilename: 'js/[name].[contenthash:8].chunk.js',
     clean: true,
     publicPath: process.env.PUBLIC_URL || '/',
+    webassemblyModuleFilename: 'calc.wasm',
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.wasm'],
@@ -118,12 +119,6 @@ module.exports = {
           name: 'vendors',
           chunks: 'all',
           priority: 10,
-        },
-        wasm: {
-          test: /[\\/]rust-calculator[\\/]/,
-          name: 'wasm-calculator',
-          chunks: 'all',
-          priority: 20,
         },
       },
     },

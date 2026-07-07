@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { App } from './App';
 import './styles/global.css';
 
-// React 挂载后移除 HTML 级预加载器
+// 在 React 挂载前，先启动 HTML 加载器的淡出
 const loader = document.getElementById('html-loader');
 if (loader) {
   loader.style.transition = 'opacity 0.4s ease';
@@ -12,7 +12,7 @@ if (loader) {
 }
 
 const root = document.getElementById('root');
-if (!root) throw new Error('Root element not found');
+if (!root) {throw new Error('Root element not found');}
 
 createRoot(root).render(
   <StrictMode>

@@ -162,14 +162,14 @@ function CalculatorApp() {
               >
               <span>{m.label}</span>
               <span className="calc-sidebar__badge">
-                {m.disabled ? '即将推出' : ''}
+                {m.disabled ? i18n.app.comingSoon : ''}
               </span>
               </button>
             ))}
           </nav>
           <div className="calc-sidebar__divider" />
           <div className="calc-sidebar__lang">
-            <span>语言 / Language</span>
+            <span>{i18n.app.language}</span>
             <select
               value={lang}
               onChange={e => setLang(e.target.value as Language)}

@@ -3,6 +3,8 @@ export type Language = 'zh-CN' | 'zh-TW' | 'en';
 export interface I18nPack {
   app: {
     title: string;
+    language: string;
+    comingSoon: string;
   };
   modes: {
     standard: string;

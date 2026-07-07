@@ -1,7 +1,7 @@
 import type { I18nPack } from './types';
 
 const en: I18nPack = {
-  app: { title: 'Calculator' },
+  app: { title: 'Calculator', language: 'Language', comingSoon: 'Coming soon' },
   modes: {
     standard: 'Standard',
     scientific: 'Scientific',

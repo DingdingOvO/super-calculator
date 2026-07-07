@@ -6,7 +6,7 @@
   "scripts": {
     "start": "webpack serve --mode development",
     "build": "webpack --mode production",
-    "build:rust": "cd rust-calculator && wasm-pack build --target bundler --release && wasm-opt -Oz -o pkg/rust_calculator_bg.wasm pkg/rust_calculator_bg.wasm",
+    "build:rust": "cd rust-calculator && wasm-pack build --target bundler --release",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "eslint 'src/**/*.{ts,tsx}'",
@@ -42,6 +42,8 @@
     "@testing-library/react": "^16.1.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.63.0",
+    "@typescript-eslint/parser": "^8.63.0",
     "autoprefixer": "^10.5.2",
     "copy-webpack-plugin": "^12.0.0",
     "css-loader": "^7.1.0",

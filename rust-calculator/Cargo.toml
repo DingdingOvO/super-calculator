@@ -21,3 +21,7 @@ wasm-bindgen-test = "0.3"
 opt-level = "z"
 lto = true
 codegen-units = 1
+strip = "symbols"
+
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = false

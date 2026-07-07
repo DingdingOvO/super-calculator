@@ -48,7 +48,7 @@ function ScientificPanel({ onClear, onBackspace }: ScientificPanelProps) {
   }, []);
 
   const handleEvaluate = useCallback(async () => {
-    if (!expr.trim()) return;
+    if (!expr.trim()) {return;}
     const evaluateFn = await getEval();
     if (!evaluateFn) {
       setResult('引擎未加载');
@@ -87,7 +87,7 @@ function ScientificPanel({ onClear, onBackspace }: ScientificPanelProps) {
           value={expr}
           onChange={e => setExpr(e.target.value)}
           placeholder="输入表达式..."
-          onKeyDown={e => { if (e.key === 'Enter') handleEvaluate(); }}
+          onKeyDown={e => { if (e.key === 'Enter') {handleEvaluate();} }}
         />
         <button
           className={`sci-angle-toggle ${angleMode === 'rad' ? 'sci-angle-toggle--rad' : ''}`}

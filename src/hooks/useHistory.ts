@@ -20,7 +20,7 @@ export function useHistory() {
   useEffect(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) setEntries(JSON.parse(raw));
+      if (raw) {setEntries(JSON.parse(raw));}
     } catch { /* ignore */ }
   }, []);
 
@@ -34,7 +34,7 @@ export function useHistory() {
 
   // 添加记录
   const addEntry = useCallback((expression: string, result: string, mode: string) => {
-    if (!expression && !result) return;
+    if (!expression && !result) {return;}
     const entry: HistoryEntry = {
       id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
       expression,

@@ -3,7 +3,7 @@ import type { I18nPack } from './types';
 // Windows 官方繁体中文修正版
 // "程序员" → "程式設計師" 等精确术语
 const zhTW: I18nPack = {
-  app: { title: '計算機' },
+  app: { title: '計算機', language: '語言', comingSoon: '即將推出' },
   modes: {
     standard: '標準',
     scientific: '工程型',

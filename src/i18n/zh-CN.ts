@@ -1,7 +1,7 @@
 import type { I18nPack } from './types';
 
 const zhCN: I18nPack = {
-  app: { title: '计算器' },
+  app: { title: '计算器', language: '语言', comingSoon: '即将推出' },
   modes: {
     standard: '标准',
     scientific: '科学',
