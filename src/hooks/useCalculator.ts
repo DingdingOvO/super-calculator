@@ -17,17 +17,6 @@ export function useWasmCalculator() {
   const [expression, setExpression] = useState('');
   const [hasError, setHasError] = useState(false);
   const [isPending, startTransition] = useTransition();
-  const hidePreloader = useRef<(() => void) | null>(null);
-
-  // 获取隐藏预加载器的函数
-  useEffect(() => {
-    hidePreloader.current = () => {
-      if (typeof window !== 'undefined' && (window as any).__hidePreloader) {
-        (window as any).__hidePreloader();
-      }
-    };
-    return () => { hidePreloader.current = null; };
-  }, []);
 
   // 加载 WASM 模块
   useEffect(() => {
@@ -41,17 +30,18 @@ export function useWasmCalculator() {
         setWasm(mod);
         setDisplay(calcRef.current.get_display());
         setLoading(false);
-        // 隐藏预加载器
-        hidePreloader.current?.();
       } catch (e: any) {
         if (cancelled) return;
         console.error('WASM 加载失败:', e);
         const msg = e?.message || String(e) || '计算引擎加载失败';
         setError(msg);
         setLoading(false);
-        // 显示错误信息到预加载器
-        if (typeof window !== 'undefined' && (window as any).__showPreloaderError) {
-          (window as any).__showPreloaderError(msg);
+        // 显示错误信息
+        if (typeof window !== 'undefined') {
+          const el = document.getElementById('html-loader');
+          if (el) {
+            el.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:20px;text-align:center"><div style="font-size:2rem;color:#ef5350">⚠</div><h3 style="margin:0;font-size:1.1rem;color:#ef5350;font-weight:500">加载失败</h3><p style="margin:0;font-size:0.85rem;color:#888;max-width:300px">${msg}</p></div>`;
+          }
         }
       }
     })();
@@ -100,6 +90,13 @@ export function useWasmCalculator() {
     });
   }, [guard, syncState]);
 
+  const clearEntry = useCallback(() => {
+    guard(() => {
+      calcRef.current.clear_entry();
+      syncState();
+    });
+  }, [guard, syncState]);
+
   const backspace = useCallback(() => {
     guard(() => {
       calcRef.current.backspace();
@@ -132,6 +129,7 @@ export function useWasmCalculator() {
     inputOperator,
     evaluate,
     clear,
+    clearEntry,
     backspace,
     negate,
     percent,

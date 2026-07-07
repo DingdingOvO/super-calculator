@@ -94,6 +94,7 @@ function CalculatorApp() {
       onOperator: calc.inputOperator,
       onEquals: calc.evaluate,
       onClear: calc.clear,
+      onClearEntry: calc.clearEntry,
       onBackspace: calc.backspace,
       onNegate: calc.negate,
       onPercent: calc.percent,
@@ -126,10 +127,11 @@ function CalculatorApp() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleKeyDown]);
 
-  if (calc.loading) return <LoadingState message="正在加载计算引擎..." />;
-  if (calc.error) return <ErrorState message={calc.error} />;
+  // 始终渲染 UI，WASM 未就绪时显示骨架屏
+  const notReady = calc.loading || calc.error;
+  const errorMsg = calc.error;
 
-  const currentPlugin = getPlugin(activeMode);
+  const currentPlugin = !calc.loading && !calc.error ? getPlugin(activeMode) : null;
   const rendered = currentPlugin?.render(i18n, theme);
 
   const modes = [
@@ -218,9 +220,33 @@ function CalculatorApp() {
             </div>
           </div>
 
-          <Display expression={calc.expression} display={calc.display} hasError={calc.hasError} i18n={i18n} />
-
-          {rendered?.buttons ?? <div style={{ color: 'var(--text-dim)', padding: 20 }}>加载中...</div>}
+          {notReady ? (
+            <>
+              <div className="calc-display calc-display--loading">
+                <div className="calc-result" style={{ fontSize: '0.95rem', fontWeight: 400, color: 'var(--text-dim)' }}>
+                  {errorMsg || '正在加载计算引擎...'}
+                </div>
+              </div>
+              <div className="calc-button-grid calc-button-grid--loading">
+                {Array.from({ length: 20 }).map((_, i) => (
+                  <div key={i} className="calc-btn calc-btn--skeleton" />
+                ))}
+              </div>
+            </>
+          ) : (
+            <>
+              {activeMode === 'standard' ? (
+                <Display expression={calc.expression} display={calc.display} hasError={calc.hasError} i18n={i18n} />
+              ) : (
+                <div className="calc-display calc-display--mode-hint">
+                  <div className="calc-result" style={{ fontSize: '0.85rem', fontWeight: 400, color: 'var(--text-dim)' }}>
+                    {activeModeLabel}
+                  </div>
+                </div>
+              )}
+              {rendered?.buttons ?? <div style={{ color: 'var(--text-dim)', padding: 20 }}>加载中...</div>}
+            </>
+          )}
         </div>
       </div>
     </div>

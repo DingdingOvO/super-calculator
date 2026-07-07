@@ -55,6 +55,11 @@ impl WasmCalculator {
         CalculatorEngine::clear(&mut self.state);
     }
 
+    /// 清除当前输入（CE）
+    pub fn clear_entry(&mut self) {
+        CalculatorEngine::clear_entry(&mut self.state);
+    }
+
     /// 退格
     pub fn backspace(&mut self) {
         CalculatorEngine::backspace(&mut self.state);

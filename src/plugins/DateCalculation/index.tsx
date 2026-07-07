@@ -4,85 +4,78 @@ import { useState, useCallback } from 'react';
 import type { CalculatorPlugin, CalculatorPluginRender } from '@plugins/types';
 import type { I18nPack } from '@i18n/types';
 
-function daysInMonth(y: number, m: number) {
-  return new Date(y, m + 1, 0).getDate();
-}
-
 function DateCalc() {
-  const [date1, setDate1] = useState('2026-01-01');
-  const [date2, setDate2] = useState(new Date().toISOString().slice(0, 10));
-  const [diffResult, setDiffResult] = useState('');
+  const [diffStart, setDiffStart] = useState('2026-01-01');
+  const [diffEnd, setDiffEnd] = useState(new Date().toISOString().slice(0, 10));
+  const [diffOut, setDiffOut] = useState('');
 
-  const [dateOp, setDateOp] = useState('2026-01-01');
-  const [addYears, setAddYears] = useState('0');
-  const [addMonths, setAddMonths] = useState('0');
-  const [addDays, setAddDays] = useState('0');
-  const [addResult, setAddResult] = useState('');
+  const [addBase, setAddBase] = useState(new Date().toISOString().slice(0, 10));
+  const [addY, setAddY] = useState('0');
+  const [addM, setAddM] = useState('0');
+  const [addD, setAddD] = useState('0');
+  const [addOut, setAddOut] = useState('');
 
-  const calcDiff = useCallback(() => {
-    const d1 = new Date(date1);
-    const d2 = new Date(date2);
-    if (isNaN(d1.getTime()) || isNaN(d2.getTime())) {
-      setDiffResult('无效日期');
-      return;
-    }
-    const diffMs = Math.abs(d2.getTime() - d1.getTime());
-    const diffDays = Math.floor(diffMs / 86400000);
-    const y1 = d1.getFullYear(), m1 = d1.getMonth(), dd1 = d1.getDate();
-    const y2 = d2.getFullYear(), m2 = d2.getMonth(), dd2 = d2.getDate();
-    let years = Math.abs(y2 - y1);
-    let months = Math.abs((y2 * 12 + m2) - (y1 * 12 + m1));
-    if (dd2 < dd1) months--;
-    if (months < 0) { years--; months += 12; }
-    const extraDays = Math.abs(dd2 - dd1);
-    setDiffResult(`${diffDays} 天（约 ${years} 年 ${months} 月 ${extraDays} 天）`);
-  }, [date1, date2]);
+  const doDiff = useCallback(() => {
+    const d1 = new Date(diffStart);
+    const d2 = new Date(diffEnd);
+    if (isNaN(d1.getTime()) || isNaN(d2.getTime())) { setDiffOut('无效日期'); return; }
+    const ms = Math.abs(d2.getTime() - d1.getTime());
+    const days = Math.floor(ms / 86400000);
+    let y = Math.abs(d2.getFullYear() - d1.getFullYear());
+    let m = Math.abs((d2.getFullYear() * 12 + d2.getMonth()) - (d1.getFullYear() * 12 + d1.getMonth()));
+    if (d2.getDate() < d1.getDate()) m--;
+    if (m < 0) { y--; m += 12; }
+    setDiffOut(`${days} 天（${y} 年 ${m} 个月）`);
+  }, [diffStart, diffEnd]);
 
-  const calcAdd = useCallback(() => {
-    const d = new Date(dateOp);
-    if (isNaN(d.getTime())) { setAddResult('无效日期'); return; }
-    const y = parseInt(addYears) || 0;
-    const m = parseInt(addMonths) || 0;
-    const dy = parseInt(addDays) || 0;
-    d.setFullYear(d.getFullYear() + y);
-    d.setMonth(d.getMonth() + m);
-    d.setDate(d.getDate() + dy);
-    setAddResult(d.toISOString().slice(0, 10));
-  }, [dateOp, addYears, addMonths, addDays]);
+  const doAdd = useCallback(() => {
+    const d = new Date(addBase);
+    if (isNaN(d.getTime())) { setAddOut('无效日期'); return; }
+    d.setFullYear(d.getFullYear() + (parseInt(addY) || 0));
+    d.setMonth(d.getMonth() + (parseInt(addM) || 0));
+    d.setDate(d.getDate() + (parseInt(addD) || 0));
+    setAddOut(d.toISOString().slice(0, 10));
+  }, [addBase, addY, addM, addD]);
 
   return (
     <div className="date-panel">
-      {/* 日期差 */}
-      <div className="date-section">
-        <h4 className="date-section__title">日期差计算</h4>
-        <label className="date-field">
-          <span>起始日期</span>
-          <input type="date" value={date1} onChange={e => setDate1(e.target.value)} />
-        </label>
-        <label className="date-field">
-          <span>结束日期</span>
-          <input type="date" value={date2} onChange={e => setDate2(e.target.value)} />
-        </label>
-        <button className="date-calc-btn" onClick={calcDiff} type="button">计算</button>
-        {diffResult && <div className="date-result">{diffResult}</div>}
+      {/* ===== 日期差 ===== */}
+      <div className="date-card">
+        <div className="date-card__title">日期差</div>
+        <div className="date-card__body">
+          <label className="date-picker">
+            <span>开始</span>
+            <input type="date" value={diffStart} onChange={e => setDiffStart(e.target.value)} />
+          </label>
+          <label className="date-picker">
+            <span>结束</span>
+            <input type="date" value={diffEnd} onChange={e => setDiffEnd(e.target.value)} />
+          </label>
+          <div className="date-card__action">
+            <button className="calc-btn calc-btn--equals date-go-btn" onClick={doDiff} type="button">计算</button>
+          </div>
+          {diffOut && <div className="date-card__result">{diffOut}</div>}
+        </div>
       </div>
 
-      <div className="date-divider" />
-
-      {/* 日期加减 */}
-      <div className="date-section">
-        <h4 className="date-section__title">日期加减</h4>
-        <label className="date-field">
-          <span>基准日期</span>
-          <input type="date" value={dateOp} onChange={e => setDateOp(e.target.value)} />
-        </label>
-        <div className="date-add-fields">
-          <input type="number" placeholder="年" value={addYears} onChange={e => setAddYears(e.target.value)} />
-          <input type="number" placeholder="月" value={addMonths} onChange={e => setAddMonths(e.target.value)} />
-          <input type="number" placeholder="日" value={addDays} onChange={e => setAddDays(e.target.value)} />
+      {/* ===== 日期加减 ===== */}
+      <div className="date-card">
+        <div className="date-card__title">日期加减</div>
+        <div className="date-card__body">
+          <label className="date-picker">
+            <span>基准</span>
+            <input type="date" value={addBase} onChange={e => setAddBase(e.target.value)} />
+          </label>
+          <div className="date-num-row">
+            <label><input type="number" value={addY} onChange={e => setAddY(e.target.value)} />年</label>
+            <label><input type="number" value={addM} onChange={e => setAddM(e.target.value)} />月</label>
+            <label><input type="number" value={addD} onChange={e => setAddD(e.target.value)} />日</label>
+          </div>
+          <div className="date-card__action">
+            <button className="calc-btn calc-btn--equals date-go-btn" onClick={doAdd} type="button">计算</button>
+          </div>
+          {addOut && <div className="date-card__result">{addOut}</div>}
         </div>
-        <button className="date-calc-btn" onClick={calcAdd} type="button">计算</button>
-        {addResult && <div className="date-result">{addResult}</div>}
       </div>
     </div>
   );
